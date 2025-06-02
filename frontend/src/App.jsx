@@ -124,7 +124,7 @@ function App() {
 
   const getCallDetails = (interval = 3000) => {
   setLoadingResult(true);
-  fetch(`/call-details?call_id=${callId}&userId=${userId}`) // <-- pass userId here
+  fetch(`/call-details?call_id=${callId}&userId=${userId}`)
     .then((response) => response.json())
     .then((data) => {
       if (data.analysis && data.summary) {
