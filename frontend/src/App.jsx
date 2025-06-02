@@ -123,20 +123,20 @@ function App() {
   };
 
   const getCallDetails = (interval = 3000) => {
-    setLoadingResult(true);
-    fetch("/call-details?call_id=" + callId)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.analysis && data.summary) {
-          console.log(data);
-          setCallResult(data);
-          setLoadingResult(false);
-        } else {
-          setTimeout(() => getCallDetails(interval), interval);
-        }
-      })
-      .catch((error) => alert(error));
-  };
+  setLoadingResult(true);
+  fetch(`/call-details?call_id=${callId}&userId=${userId}`) // <-- pass userId here
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.analysis && data.summary) {
+        console.log(data);
+        setCallResult(data);
+        setLoadingResult(false);
+      } else {
+        setTimeout(() => getCallDetails(interval), interval);
+      }
+    })
+    .catch((error) => alert(error));
+};
 
   const selectExpert = (expert) => {
     setSelectedExpert(expert);

@@ -18,22 +18,13 @@ db.connect()
 
 const getUserData = async (userId) => {
     try {
-        console.log(`🔍 Querying database for user ID: ${userId}`);
-        
         const query = `
             SELECT name, skills, years_of_experience, current_job_role, experience_description,
                     field_of_study, headline, industry, bio, interested_job_roles
             FROM userinterviewprofile WHERE id = $1
         `;
-        
-        console.log('📝 Executing query:', query);
-        console.log('📝 With parameter:', [userId]);
-        
+
         const result = await db.query(query, [userId]);
-        
-        console.log('📊 Query result rows count:', result.rows.length);
-        console.log('📊 Query result:', result.rows[0]);
-        
         return result.rows[0];
     } catch (error) {
         console.error('❌ Error in getUserData function:', error);
@@ -48,16 +39,12 @@ const getUserData = async (userId) => {
 
 const mapUserVariables = (userData, companyName = "TechCorp") => {
     try {
-        console.log('🗺️ Mapping user variables for:', userData);
-        
         // Handle skills - check if it's a string that needs parsing or already an array
         let skills = [];
         if (typeof userData.skills === 'string') {
             try {
-                // Try to parse as JSON array first
                 skills = JSON.parse(userData.skills);
             } catch {
-                // If not JSON, split by comma
                 skills = userData.skills.split(',').map(skill => skill.trim());
             }
         } else if (Array.isArray(userData.skills)) {
@@ -68,19 +55,16 @@ const mapUserVariables = (userData, companyName = "TechCorp") => {
         let interestedRoles = [];
         if (typeof userData.interested_job_roles === 'string') {
             try {
-                // Try to parse as JSON array first
                 interestedRoles = JSON.parse(userData.interested_job_roles);
             } catch {
-                // If not JSON, split by comma
                 interestedRoles = userData.interested_job_roles.split(',').map(role => role.trim());
             }
         } else if (Array.isArray(userData.interested_job_roles)) {
             interestedRoles = userData.interested_job_roles;
         }
 
-        // Extract first name from full name
         const firstName = userData.name ? userData.name.split(' ')[0] : '';
-            
+
         const mappedData = {
             firstName: firstName,
             name: userData.name || '',
@@ -99,15 +83,14 @@ const mapUserVariables = (userData, companyName = "TechCorp") => {
             bio: userData.bio || '',
             headline: userData.headline || '',
             experience_description: userData.experience_description || '',
-            
+
             // Additional fields for better VAPI integration
-            skills: skills, // Raw array
-            interested_job_roles: interestedRoles // Raw array
+            skills: skills,
+            interested_job_roles: interestedRoles
         };
-        
-        console.log('✅ Successfully mapped user variables');
+
         return mappedData;
-        
+
     } catch (error) {
         console.error('❌ Error in mapUserVariables function:', error);
         throw error;
